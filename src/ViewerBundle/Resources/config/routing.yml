@@ -1,0 +1,16 @@
+viewer_homepage:
+    path:     /{_locale}
+    defaults: { _controller: ViewerBundle:Default:index, _locale: %locale% }
+    requirements:
+        _locale:  en|uk
+kmda_maplink:
+    path:     /{_locale}/maplink/{zoom}/{x}/{y}/{l}
+    defaults: { _controller: ViewerBundle:Default:maplink, _locale: %locale% }
+    requirements:
+        _method: GET
+        _locale:  en|uk
+
+kmda_setlocale:
+    path: /setlocale
+    defaults: { _controller: ViewerBundle:Default:setlang }
+    condition: "request.isXmlHttpRequest()"
