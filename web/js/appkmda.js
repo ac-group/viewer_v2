@@ -3970,9 +3970,9 @@ $(function () {
         var coord = map.getView().getCenter();
         var t = ol.proj.transform(coord, 'EPSG:900913', 'EPSG:4326');
         if ($('.language_container i').text() == "UA") {
-            var str = window.location.protocol + "//" + window.location.hostname + "/uk/maplink/" + map.getView().getZoom() + "/" + t[1] + "/" + t[0] + "/";
+            var str = window.location.protocol + "//" + window.location.hostname + Routing.generate('viewer_homepage') + "uk/maplink/" + map.getView().getZoom() + "/" + t[1] + "/" + t[0] + "/";
         } else {
-            var str = window.location.protocol + "//" + window.location.hostname + "/en/maplink/" + map.getView().getZoom() + "/" + t[1] + "/" + t[0] + "/";
+            var str = window.location.protocol + "//" + window.location.hostname + Routing.generate('viewer_homepage') + "en/maplink/" + map.getView().getZoom() + "/" + t[1] + "/" + t[0] + "/";
         }
         var temp = '';
         map.getLayers().forEach(function (l, i) {
@@ -4055,20 +4055,22 @@ $(function () {
             if ($('.language_container i').text() == "UA") {
                 $('.language_container i').text("EN")
                 $('.language_container .mdl-tooltip').text("English");
-                if (window.location.pathname.indexOf('/uk') === 0) {
-                    window.location.replace('/en' + window.location.pathname.substr(3));
-                } else {
-                    if (window.location.pathname === "/") {
-                        window.location.replace('/en');
-                    } else {
-                        window.location.replace('/en' + window.location.pathname);
-                    }
-                }
+//                if (window.location.pathname.indexOf('/uk') === 0) {
+//                    window.location.replace('/en' + window.location.pathname.substr(3));
+//                } else {
+//                    if (window.location.pathname === "/") {
+//                        window.location.replace('/en');
+//                    } else {
+//                        window.location.replace('/en' + window.location.pathname);
+//                    }
+//                }
+                window.location.replace(Routing.generate('viewer_homepage', {_locale: "en"}));
             } else {
                 $('.language_container i').text("UA");
                 $('.language_container .mdl-tooltip').text("Українською");
 
-                window.location.replace('/uk' + window.location.pathname.substr(3));
+//                window.location.replace('/uk' + window.location.pathname.substr(3));
+                window.location.replace(Routing.generate('viewer_homepage', {_locale: "uk"}));
 
             }
         });
