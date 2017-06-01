@@ -1,0 +1,24 @@
+ViewerBundle\Entity\Layer:
+    type:  entity
+    table: layers
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        type:
+            type: string
+            length: 255
+        name:
+            type: string
+            length: 255
+        source:
+            type: string
+            length: 255
+        params:
+            type: string
+            length: 255
+            nullable: true
+        active:
+            type: boolean

@@ -7,6 +7,11 @@ services:
     #service_name:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+    admin.layer:
+        class: ViewerBundle\Admin\LayerAdmin
+        arguments: [~, ViewerBundle\Entity\Layer, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Слои, group: Слои }
     admin.user:
         class: ViewerBundle\Admin\UserAdmin
         arguments: [~, ViewerBundle\Entity\User, ~]

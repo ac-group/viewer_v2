@@ -11,7 +11,8 @@ class UserAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper->add('username', 'text')
-            ->add('enabled');
+            ->add('enabled')
+            ->add('layers')    ;
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)

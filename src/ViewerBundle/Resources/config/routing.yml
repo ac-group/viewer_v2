@@ -14,3 +14,15 @@ kmda_setlocale:
     path: /setlocale
     defaults: { _controller: ViewerBundle:Default:setlang }
     condition: "request.isXmlHttpRequest()"
+
+get_all_layers:
+    path: /getAllLayers
+    defaults: { _controller: ViewerBundle:Layer:getAll }
+    options:
+        expose: true
+        
+get_active_layers:
+    path: /getActiveLayers
+    defaults: { _controller: ViewerBundle:Layer:getActive }
+    options:
+        expose: true

@@ -1,10 +1,10 @@
-{% extends 'ViewerBundle:Default:base/index.html.twig' %}
+{% extends '::base.html.twig' %}
 
 {% block stylesheets %}
     {% stylesheets
     'css/bootstrap.css'
-    'https://fonts.googleapis.com/icon?family=Material+Icons'
-    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=cyrillic,cyrillic-ext'
+    '//fonts.googleapis.com/icon?family=Material+Icons'
+    '//fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=cyrillic,cyrillic-ext'
     'css/material.min.css'
     'css/new_css.css'
     'css/style.css'
@@ -12,13 +12,14 @@
     '//ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/themes/base/jquery-ui.css'
     'css/new_modal.css'
     filter='cssrewrite'
-    output='css/sc22.css'
- %}
+    output='js/sc3.css' %}
     <link rel="stylesheet" href="{{ asset_url }}"/>
     {% endstylesheets %}
 {% endblock %}
 
 {% block javascripts %}
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
         <script
       src='https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyADCA0LMlMFz6z6SqQkrxnEzao8jJAyDEQ&libraries=places'>
     </script>
@@ -29,7 +30,6 @@
     'js/clipboard.min.js'
     'js/getmdl-select.min.js'
     'js/jquery.bxslider.min.js'
-
     '//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js'
     '//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.3.0/js/material.min.js'
     '//code.jquery.com/ui/1.12.1/jquery-ui.min.js'
@@ -37,18 +37,18 @@
     'js/ol.js'
     'js/ol3gm.js'
     'js/addSlider.js'
-
     'js/main.js'
     'js/app.js'
     'js/new_modal.js'
     filter='?uglifyjs2'
-    output='js/sc22.js' %}
+    output='js/sc3.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
+
 {% endblock %}
 {#    'js/version2/coatuusearch.js'#}
 {% block body -%}
-    <body>
+
     <div class="head_block">
         <div class="menu_button">
             <button class="mdl-button mdl-js-button mdl-button--icon filter_list open_menu_but">
@@ -177,7 +177,7 @@
                     </div>
                 </div>
                 <div class="level_menu">
-                    <a id="thematicMap"class="mdl-navigation__link mdl-navigation__level1 " href="#">
+                    <a id="thematicMap" class="mdl-navigation__link mdl-navigation__level1 " href="#">
                         <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">terrain</i>{{'Тематичні карти'|trans}}</a>
 
                     <div class="mdl-navigation__level2">
@@ -556,7 +556,7 @@
                 <hr>
 
 
-                <li id='osmBase' class="mdl-menu__item" data-clipboard-text="https://www.openstreetmap.org/" data-clipboard-text="https://www.openstreetmap.org/" data-val="osm">Open Street Map
+                <li id='osmBase' class="mdl-menu__item" data-clipboard-text="https://www.openstreetmap.org/" data-val="osm">Open Street Map
                     <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">info</i>
                     <div id='orto10000baseInfoTooltip' class="tooltip-info">
                         <a id='bufferOSM' href="https://www.openstreetmap.org/" target="_blank">Open Street Map</a><br>
@@ -582,7 +582,7 @@
                 <div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="osmCycle">
                     {{'Веб-картографічний проект по створенню детальної, вільної і безкоштовної географічної карти світу'|trans}}
                 </div>
-                <li id='googleSatelit'class="mdl-menu__item" data-val="google">Google Satellite
+                <li id='googleSatelit' class="mdl-menu__item" data-val="google">Google Satellite
                     <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">info</i>
                     <div class="tooltip-info">
                         <a href="https://www.google.com.ua/maps/@49.2326973,28.4969277,13683m/data=!3m1!1e3" target="_blank">Google Satellite</a><br>
@@ -595,7 +595,7 @@
                 <div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="googleSatelit">
                     {{'Набір додатків, побудованих на основі безкоштовного картографічного сервісу і технологій, які надає компанія Google.'|trans}}
                 </div>
-                <li id='googleHybrid'class="mdl-menu__item" data-val="googlehybrid">Google Hybrid
+                <li id='googleHybrid' class="mdl-menu__item" data-val="googlehybrid">Google Hybrid
                     <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">info</i>
                     <div class="tooltip-info">
                         <a href="https://www.google.com.ua/maps/@49.2326973,28.4969277,13683m" target="_blank">Google Hybrid</a><br>
@@ -609,13 +609,13 @@
                     {{'Набір додатків, побудованих на основі безкоштовного картографічного сервісу і технологій, які надає компанія Google.'|trans}}
                 </div>
                 <hr>
-                <li id='emptyLayerR'class="mdl-menu__item" data-val="emptyRelief">{{'Порожній шар (рельєф)'|trans}}
+                <li id='emptyLayerR' class="mdl-menu__item" data-val="emptyRelief">{{'Порожній шар (рельєф)'|trans}}
                     <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">info</i>
                 </li>
                 <div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="emptyLayerR">
                     {{'Базовий шар рельєфу'|trans}}
                 </div>
-                <li id='emptyLayer'class="mdl-menu__item" data-val="emptyLayer">{{'Порожній шар'|trans}}
+                <li id='emptyLayer' class="mdl-menu__item" data-val="emptyLayer">{{'Порожній шар'|trans}}
                     <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">info</i>
                 </li>
                 <div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="emptyLayer">
@@ -691,7 +691,7 @@
        B:<span class="x"></span>,
        L:<span class="y"></span>
     </div>
-    <i class="mdl-color-text--blue-grey-400 material-icons map-center" role="presentation">add</i></a>
+    <i class="mdl-color-text--blue-grey-400 material-icons map-center" role="presentation">add</i>
     {% include 'ViewerBundle:Default:modal/help.html.twig' %}
     {% include 'ViewerBundle:Default:modal/copy.html.twig' %}
     {% include 'ViewerBundle:Default:modal/errorSearchAddress.html.twig' %}
@@ -703,9 +703,5 @@
     <i id="location" class="material-icons">gps_fixed</i>
     <i id="searchLocation" class="material-icons">location_on</i>
 
-
-
-
-    </body>
 
 {% endblock body %}

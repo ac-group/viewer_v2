@@ -26,7 +26,8 @@ class AppKernel extends Kernel
 	    new FOS\UserBundle\FOSUserBundle(),
 //            new AppBundle\AppBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-            new ViewerBundle\ViewerBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+            new ViewerBundle\ViewerBundle(),             
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

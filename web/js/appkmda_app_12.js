@@ -378,9 +378,11 @@ function geolocation(map) {
 
 $(function () {
     md = new MobileDetect(window.navigator.userAgent);
-
-
-
+alert("aaaa");
+//    $.ajax({
+//     url: Routing.generate('get_all_layers'),       
+//    });
+alert(Routing.generate('get_all_layers'));
 
     $('#main_tt7').on('click', function () {
         $('#modal-help').toggleClass('open');

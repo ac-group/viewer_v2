@@ -6,3 +6,14 @@ ViewerBundle\Entity\User:
             type: integer
             generator:
                 strategy: AUTO
+    manyToMany:
+      layers:
+        targetEntity: Layer
+        joinTable:
+          name: users_layers
+          joinColumns:
+            user_id:
+              referencedColumnName: id
+          inverseJoinColumns:
+            layer_id:
+              referencedColumnName: id
