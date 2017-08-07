@@ -16,6 +16,9 @@ ViewerBundle\Entity\Layer:
         source:
             type: string
             length: 255
+        sourcetype:
+            type: string
+            length: 255
         params:
             type: string
             length: 255

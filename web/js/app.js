@@ -8,6 +8,55 @@ var osmLayer;
 var art = ['parcelSidebar', 'vectorVinSidebar', 'wms3', 'orto10000sidebar', 'orto2000sidebar', 'dynamicSidebar', 'gryntSidebar', 'razgrafkaSidebar', 'boundVinSidebar', 'vinOrtoSidebar', 'topoVinSidebar', 'hydroVinSidebar', 'geodeticSidebar', 'buildingsVinSidebar', 'fencesVinSidebar', 'engcommVinSidebar', 'vegetVinSidebar', 'streetsVinSidebar', 'transportVinSidebar'];
 var md;
 
+var aLayers = aLayers || (function () {
+    var _args = {}; // private
+
+    return {
+        init: function (Args) {
+            _args = Args;
+            // some other initialising
+        },
+        fromAdminLayers: function () {
+            _args.forEach(function (layer) {
+                var l = (Function('return new ' + layer.type))();
+                l.set('name', layer.name);
+                if (layer.sourcetype === 'ol.source.OSM') {                    
+                    l.setSource(new ol.source.OSM(
+                            {
+                                url: layer.source,
+                                crossOrigin: 'null'
+                            }
+                    ));
+                }
+                if (layer.sourcetype === 'ol.source.XYZ') {                    
+                    l.setSource(new ol.source.XYZ(
+                            {
+                                url: layer.source,
+                                crossOrigin: 'null'
+                            }
+                    ));
+                }
+                if (layer.sourcetype === 'ol.source.TileWMS') {   
+                    var params = JSON.parse(layer.params.replace(/\["]/g,''));
+
+//                    console.log(params['LAYERS']);
+                    l.setSource(new ol.source.TileWMS(
+                            {
+                                url: layer.source,
+                                params: params// { 'LAYERS': 'grunt','ALIAS': 'Грунти','ALIAS_E': 'Soils', VERSION: '1.1.1','TILED': 'true','FORMAT': 'image/png8','WIDTH': 702,'HEIGHT': 768,'CRS': 'EPSG:900913', serverType: 'geoserver',crossOrigin: ''}
+                            }
+                    ));
+//            l.getSource().setProperties(layer.params);
+                }
+//                l.setProperties(layer.params);
+                l.setVisible(false);
+                map.addLayer(l);
+//                        alert(window['layer.name'].get('name'));
+                //console.log(l);
+            })
+        }
+    };
+}());
 
 function showUP(layer, elem) {
 
@@ -389,10 +438,10 @@ $(function () {
     });
 
     $("#save_map_url").on('click', function () {
-        if($('.mdl-layout__drawer').hasClass('left_menu_open')){
-           $('#modal-copy .dialog_window_publication_bids_list_copy').css('left','315px');
-        }else{
-            $('#modal-copy .dialog_window_publication_bids_list_copy').css('left','625px');
+        if ($('.mdl-layout__drawer').hasClass('left_menu_open')) {
+            $('#modal-copy .dialog_window_publication_bids_list_copy').css('left', '315px');
+        } else {
+            $('#modal-copy .dialog_window_publication_bids_list_copy').css('left', '625px');
         }
         var coord = map.getView().getCenter();
         var t = ol.proj.transform(coord, 'EPSG:900913', 'EPSG:4326');
@@ -998,29 +1047,29 @@ $(function () {
             name: 'buildingsVinSidebar'
         });
 
-       /* var fencesVinSidebarWms = new ol.source.TileWMS({
-            url: '/geoserver/nsdi/wms',
-            params: {
-                'LAYERS': 'nsdi:fences',
-                'ALIAS': 'Огорожі',
-                'ALIAS_E': 'Fences',
-                'VERSION': '1.1.0',
-                'TILED': 'true',
-                'FORMAT': 'image/png8',
-                'WIDTH': 768,
-                'HEIGHT': 699,
-                'CRS': 'EPSG:3857',
-                serverType: 'geoserver',
-                crossOrigin: '',
-                projection: projection,
-            }
-        });
-
-        var fencesVinSidebar = new ol.layer.Tile({
-            source: fencesVinSidebarWms,
-            visible: 0,
-            name: 'fencesVinSidebar'
-        });*/
+        /* var fencesVinSidebarWms = new ol.source.TileWMS({
+         url: '/geoserver/nsdi/wms',
+         params: {
+         'LAYERS': 'nsdi:fences',
+         'ALIAS': 'Огорожі',
+         'ALIAS_E': 'Fences',
+         'VERSION': '1.1.0',
+         'TILED': 'true',
+         'FORMAT': 'image/png8',
+         'WIDTH': 768,
+         'HEIGHT': 699,
+         'CRS': 'EPSG:3857',
+         serverType: 'geoserver',
+         crossOrigin: '',
+         projection: projection,
+         }
+         });
+         
+         var fencesVinSidebar = new ol.layer.Tile({
+         source: fencesVinSidebarWms,
+         visible: 0,
+         name: 'fencesVinSidebar'
+         });*/
 
         var engcommVinSidebarWms = new ol.source.TileWMS({
             url: '/geoserver/nsdi/wms',
@@ -1045,7 +1094,7 @@ $(function () {
             visible: 0,
             name: 'engcommVinSidebar'
         });
-        
+
         var vegetVinSidebarWms = new ol.source.TileWMS({
             url: '/geoserver/nsdi/wms',
             params: {
@@ -1069,12 +1118,12 @@ $(function () {
             visible: 0,
             name: 'vegetVinSidebar'
         });
-        
+
         var razgrafkaSidebarWms = new ol.source.TileWMS({
             url: '/geoserver/nsdi/wms',
             params: {
                 'LAYERS': 'nsdi:razgrafka1942_ua',
-                'ALIAS':'Разграфка (Україна 1942)',
+                'ALIAS': 'Разграфка (Україна 1942)',
                 'ALIAS_E': 'Geographical GRID (Ukraine 1942)',
                 'VERSION': '1.1.0',
                 'TILED': 'true',
@@ -1118,30 +1167,30 @@ $(function () {
             name: 'geodeticSidebar'
         });
 
-        var gryntSidebarWms = new ol.source.TileWMS({
-            url: 'http://map.land.gov.ua/geowebcache/service/wms',
-            params: {
-                'LAYERS': 'grunt',
-                'ALIAS': 'Грунти',
-                'ALIAS_E': 'Soils',
-                'VERSION': '1.1.1',
-                'TILED': 'true',
-                'FORMAT': 'image/png8',
-                'WIDTH': 702,
-                'HEIGHT': 768,
-                'CRS': 'EPSG:900913',
-                serverType: 'geoserver',
-                crossOrigin: '',
-                projection: projection,
-            }
-        });
-
-
-        var gryntSidebar = new ol.layer.Tile({
-            source: gryntSidebarWms,
-            visible: 0,
-            name: 'gryntSidebar'
-        });
+//        var gryntSidebarWms = new ol.source.TileWMS({
+//            url: 'http://map.land.gov.ua/geowebcache/service/wms',
+//            params: {
+//                'LAYERS': 'grunt',
+//                'ALIAS': 'Грунти',
+//                'ALIAS_E': 'Soils',
+//                'VERSION': '1.1.1',
+//                'TILED': 'true',
+//                'FORMAT': 'image/png8',
+//                'WIDTH': 702,
+//                'HEIGHT': 768,
+//                'CRS': 'EPSG:900913',
+//                serverType: 'geoserver',
+//                crossOrigin: '',
+//                projection: projection,
+//            }
+//        });
+//
+//
+//        var gryntSidebar = new ol.layer.Tile({
+//            source: gryntSidebarWms,
+//            visible: 0,
+//            name: 'gryntSidebar'
+//        });
 
         var parcelSidebarWms = new ol.source.TileWMS({
             url: '/dzkc',
@@ -1167,52 +1216,52 @@ $(function () {
             name: 'parcelSidebar'
         });
 
-        var dynamicSidebarWms = new ol.source.TileWMS({
-            url: 'http://212.26.144.103/geoserver/dzk/wms',
-            params: {
-                'LAYERS': 'dzk:osm',
-                'ALIAS': 'Динамічна карта',
-                'ALIAS_E': 'Dynamic Map',
-                'VERSION': '1.1.1',
-                'TILED': 'true',
-                'FORMAT': 'image/png',
-                'WIDTH': 702,
-                'HEIGHT': 768,
-                'CRS': 'EPSG:900913', //, CQL_FILTER:'koatuu=3520386800'
-                serverType: 'geoserver',
-                crossOrigin: '',
-                projection: projection,
-            }
-        });
+//        var dynamicSidebarWms = new ol.source.TileWMS({
+//            url: 'http://212.26.144.103/geoserver/dzk/wms',
+//            params: {
+//                'LAYERS': 'dzk:osm',
+//                'ALIAS': 'Динамічна карта',
+//                'ALIAS_E': 'Dynamic Map',
+//                'VERSION': '1.1.1',
+//                'TILED': 'true',
+//                'FORMAT': 'image/png',
+//                'WIDTH': 702,
+//                'HEIGHT': 768,
+//                'CRS': 'EPSG:900913', //, CQL_FILTER:'koatuu=3520386800'
+//                serverType: 'geoserver',
+//                crossOrigin: '',
+//                projection: projection,
+//            }
+//        });
+//
+//        var dynamicSidebar = new ol.layer.Tile({
+//            source: dynamicSidebarWms,
+//            visible: 0,
+//            name: 'dynamicSidebar'
+//        });
 
-        var dynamicSidebar = new ol.layer.Tile({
-            source: dynamicSidebarWms,
-            visible: 0,
-            name: 'dynamicSidebar'
-        });
-        
-       /* var streetsSidebarWms = new ol.source.TileWMS({
-            url: '/geoserver/wms',
-            params: {
-                'LAYERS': 'nsdi_street',
-                'ALIAS': 'Вулична мережа',
-                'ALIAS_E': 'Street network',
-                'VERSION': '1.1.1',
-                'TILED': 'true',
-                'FORMAT': 'image/png',
-                'WIDTH': 768,
-                'HEIGHT': 692,
-                'CRS': 'EPSG:900913', //, CQL_FILTER:'koatuu=3520386800'
-                serverType: 'geoserver',
-                crossOrigin: '',
-                projection: projection,
-            }
-        });
-        var streetsVinSidebar = new ol.layer.Tile({
-            source: streetsSidebarWms,
-            visible: 0,
-            name: 'streetsVinSidebar'
-        });*/
+        /* var streetsSidebarWms = new ol.source.TileWMS({
+         url: '/geoserver/wms',
+         params: {
+         'LAYERS': 'nsdi_street',
+         'ALIAS': 'Вулична мережа',
+         'ALIAS_E': 'Street network',
+         'VERSION': '1.1.1',
+         'TILED': 'true',
+         'FORMAT': 'image/png',
+         'WIDTH': 768,
+         'HEIGHT': 692,
+         'CRS': 'EPSG:900913', //, CQL_FILTER:'koatuu=3520386800'
+         serverType: 'geoserver',
+         crossOrigin: '',
+         projection: projection,
+         }
+         });
+         var streetsVinSidebar = new ol.layer.Tile({
+         source: streetsSidebarWms,
+         visible: 0,
+         name: 'streetsVinSidebar'
+         });*/
 
         var transportSidebarWms = new ol.source.TileWMS({
             url: '/geoserver/nsdi/wms',
@@ -1237,16 +1286,16 @@ $(function () {
             visible: 0,
             name: 'transportVinSidebar'
         });
-        
-        var osmLayer = new ol.layer.Tile({
-            source: new ol.source.OSM({
-                url: 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            }),
-            // visible: 1,
-            name: 'osm',
-            visible: 0,
 
-        });
+//        var osmLayer = new ol.layer.Tile({
+//            source: new ol.source.OSM({
+//                url: 'http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+//            }),
+//            // visible: 1,
+//            name: 'osm',
+//            visible: 0,
+//
+//        });
 
         var pubLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
@@ -1266,44 +1315,44 @@ $(function () {
             visible: 0,
         });
 
-        var orto10000sidebar = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'http://map.land.gov.ua/map/ortho10k_all/{z}/{x}/{-y}.jpg',
-                crossOrigin: 'null'
-            }),
-            name: 'orto10000sidebar',
-            visible: 0,
-        });
+//        var orto10000sidebar = new ol.layer.Tile({
+//            source: new ol.source.XYZ({
+//                url: 'http://map.land.gov.ua/map/ortho10k_all/{z}/{x}/{-y}.jpg',
+//                crossOrigin: 'null'
+//            }),
+//            name: 'orto10000sidebar',
+//            visible: 0,
+//        });
 
-        var orto2000sidebar = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'http://212.26.144.103/map/ortho2k_all/{z}/{x}/{-y}.jpg',
-                crossOrigin: 'null'
-            }),
-            name: 'orto2000sidebar',
-            visible: 0,
-        });
-        var topoVin = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'http://212.26.144.103/map/topo2k_vyn/{z}/{x}/{y}.png',
-                crossOrigin: 'null'
-            }),
-            name: 'topoVin',
-            visible: 0,
-        });
+//        var orto2000sidebar = new ol.layer.Tile({
+//            source: new ol.source.XYZ({
+//                url: 'http://212.26.144.103/map/ortho2k_all/{z}/{x}/{-y}.jpg',
+//                crossOrigin: 'null'
+//            }),
+//            name: 'orto2000sidebar',
+//            visible: 0,
+//        });
+//        var topoVin = new ol.layer.Tile({
+//            source: new ol.source.XYZ({
+//                url: 'http://212.26.144.103/map/topo2k_vyn/{z}/{x}/{y}.png',
+//                crossOrigin: 'null'
+//            }),
+//            name: 'topoVin',
+//            visible: 0,
+//        });
 
-        var topoVinSidebar = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'http://212.26.144.103/map/topo2k_vyn/{z}/{x}/{y}.png',
-                crossOrigin: 'null',
-                params: {
-                    'ALIAS': 'Топографічна карта',
-                    'ALIAS_E': 'Topographic map'
-                }
-            }),
-            name: 'topoVinSidebar',
-            visible: 0,
-        });
+//        var topoVinSidebar = new ol.layer.Tile({
+//            source: new ol.source.XYZ({
+//                url: 'http://212.26.144.103/map/topo2k_vyn/{z}/{x}/{y}.png',
+//                crossOrigin: 'null',
+//                params: {
+//                    'ALIAS': 'Топографічна карта',
+//                    'ALIAS_E': 'Topographic map'
+//                }
+//            }),
+//            name: 'topoVinSidebar',
+//            visible: 0,
+//        });
         var topoUA = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: 'http://map.land.gov.ua/map/topo100k_all/{z}/{x}/{-y}.jpg',
@@ -1363,25 +1412,25 @@ $(function () {
          visible: 0,
          });
          */
-        var dzk_overview = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-//                url: '/ortho2k_2015/{z}/{x}/{-y}.jpg',
-                url: 'http://212.26.144.103/map/dzk_overview/{z}/{x}/{-y}.png',
-                crossOrigin: 'null',
-            }),
-            name: 'dzk_overview',
-            visible: 0,
-        });
-
-        var kiev2015Layer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-//                url: '/ortho2k_2015/{z}/{x}/{-y}.jpg',
-                url: 'http://map.land.gov.ua/map/ortho_kiev/{z}/{x}/{-y}.jpg',
-                crossOrigin: 'null',
-            }),
-            name: 'kiev2015',
-            visible: 0,
-        });
+//        var dzk_overview = new ol.layer.Tile({
+//            source: new ol.source.XYZ({
+////                url: '/ortho2k_2015/{z}/{x}/{-y}.jpg',
+//                url: 'http://212.26.144.103/map/dzk_overview/{z}/{x}/{-y}.png',
+//                crossOrigin: 'null',
+//            }),
+//            name: 'dzk_overview',
+//            visible: 0,
+//        });
+//
+//        var kiev2015Layer = new ol.layer.Tile({
+//            source: new ol.source.XYZ({
+////                url: '/ortho2k_2015/{z}/{x}/{-y}.jpg',
+//                url: 'http://map.land.gov.ua/map/ortho_kiev/{z}/{x}/{-y}.jpg',
+//                crossOrigin: 'null',
+//            }),
+//            name: 'kiev2015',
+//            visible: 0,
+//        });
 
         /**
          * Create an overlay to anchor the popup to the map.
@@ -1414,14 +1463,14 @@ $(function () {
 //          });
 
 
-        var cycleLayer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=b29e6bf28b894c94958bfd507072f4c8',
-                crossOrigin: 'null',
-            }),
-            name: 'OpenCycleMap',
-            visible: 0,
-        });
+//        var cycleLayer = new ol.layer.Tile({
+//            source: new ol.source.XYZ({
+//                url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=b29e6bf28b894c94958bfd507072f4c8',
+//                crossOrigin: 'null',
+//            }),
+//            name: 'OpenCycleMap',
+//            visible: 0,
+//        });
 
         var googleLayer = new olgm.layer.Google({name: 'google', visible: 0, mapTypeId: google.maps.MapTypeId.SATELLITE});
         var googleHybridLayer = new olgm.layer.Google({
@@ -1432,36 +1481,35 @@ $(function () {
 
 
         map = new ol.Map({
-
             target: "mapView",
             layers: [
-                topoVin,
+//                topoVin,
                 topoUA,
                 googleLayer,
                 googleHybridLayer,
-                osmLayer,
+//                osmLayer,
                 emptyRelief,
-                cycleLayer,
+//                cycleLayer,
                 pubLayer,
                 kiev2006Layer,
                 vin2015Layer,
                 vectorVinSidebar,
                 vinOrtoSidebar,
-                orto10000sidebar,
-                orto2000sidebar,
-                dynamicSidebar,
-                gryntSidebar,
+//                orto10000sidebar,
+//                orto2000sidebar,
+//                dynamicSidebar,
+//                gryntSidebar,
                 boundVinSidebar,
                 emptyLayer,
-                topoVinSidebar,
+//                topoVinSidebar,
                 hydroVinSidebar,
                 razgrafkaSidebar,
                 geodeticSidebar,
                 buildingVinSidebar,
-               // fencesVinSidebar,
+                // fencesVinSidebar,
                 engcommVinSidebar,
                 vegetVinSidebar,
-               // streetsVinSidebar,
+                // streetsVinSidebar,
                 transportVinSidebar,
                 parcelSidebar
             ],
@@ -1472,6 +1520,7 @@ $(function () {
                     target: document.getElementById('scale-line')})
             ]),
         });
+        aLayers.fromAdminLayers();
 
         var getPar = parsemaplinkURL();
 
@@ -1499,15 +1548,15 @@ $(function () {
                 if (getPar[4].charAt(ic) == 1) {
                     l.setVisible(true);
                     if (($.inArray(l.get('name'), art)) > -1) {
-                    
-                    $('#' + l.get('name')).addClass('active').closest('.mdl-navigation__level2').prev().closest('.mdl-navigation__level1').addClass('active');
+
+                        $('#' + l.get('name')).addClass('active').closest('.mdl-navigation__level2').prev().closest('.mdl-navigation__level1').addClass('active');
 //                    $('#' + l.get('name')).closest('.mdl-navigation__level2').prev().find('.layersOff').show().children('label').addClass('is-checked');
 
 
-                    } 
+                    }
                     else {
 // Set base layer switcher title
-                        $('#map_mode').val($("li.mdl-menu__item[data-val='" + l.get('name') + "']").text()); 
+                        $('#map_mode').val($("li.mdl-menu__item[data-val='" + l.get('name') + "']").text());
                     }
                 } else {
                     l.setVisible(false);
@@ -1543,20 +1592,20 @@ $(function () {
         });
         map.addControl(overview);
         $('.ol-zoom-in').after('<button class="ol-zoom-all" type="button" id="ol-zoom-all" tabindex="0"><i class="material-icons">language</i></button> ' +
-            '<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-all">Показати повністю</div>');
+                '<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-all">Показати повністю</div>');
         $('.ol-overviewmap button').attr("id", "ol-overviewmap");
         $('.ol-overviewmap button').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-overviewmap" >Оглядова карта</div>');
         $('.ol-zoom-in').attr("id", "ol-zoom-in");
         if ($('.language_container i').text() == "UA") {
-        $('.ol-zoom-in').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-in" >Збільшити</div>');
+            $('.ol-zoom-in').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-in" >Збільшити</div>');
 
-        $('.ol-zoom-out').attr("id", "ol-zoom-out");
-        $('.ol-zoom-out').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-out" >Зменшити</div>');
-    } else {
-        $('.ol-zoom-in').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-in" >Enlarge</div>');
-        $('.ol-zoom-out').attr("id", "ol-zoom-out");
-        $('.ol-zoom-out').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-out" >Decrease</div>');        
-    }
+            $('.ol-zoom-out').attr("id", "ol-zoom-out");
+            $('.ol-zoom-out').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-out" >Зменшити</div>');
+        } else {
+            $('.ol-zoom-in').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-in" >Enlarge</div>');
+            $('.ol-zoom-out').attr("id", "ol-zoom-out");
+            $('.ol-zoom-out').append('<div class="mdl-tooltip main_mdl-tooltip" data-mdl-for="ol-zoom-out" >Decrease</div>');
+        }
 
 
 
@@ -1573,14 +1622,14 @@ $(function () {
             geolocation(map);
         });
 
-        $('.ol-zoom-all').on('mousedown', function(){
-           $(this).addClass('active');
+        $('.ol-zoom-all').on('mousedown', function () {
+            $(this).addClass('active');
         });
-        $('.ol-zoom-all').on('mouseup', function(){
+        $('.ol-zoom-all').on('mouseup', function () {
             $(this).removeClass('active');
         });
 
-        $('.ol-zoom-all').on('click', function(){
+        $('.ol-zoom-all').on('click', function () {
             var view = new ol.View({
                 center: [3506000, 6125000],
                 zoom: 6
@@ -1674,10 +1723,10 @@ $(function () {
 
                         if (l.getSource().getParams().ALIAS) {
                             if ($('.language_container i').text() == "UA") {
-                            layerAlias = l.getSource().getParams().ALIAS;
-                        } else {
-                            layerAlias = l.getSource().getParams().ALIAS_E;
-                        }
+                                layerAlias = l.getSource().getParams().ALIAS;
+                            } else {
+                                layerAlias = l.getSource().getParams().ALIAS_E;
+                            }
                         } else {
                             layerAlias = "Не визначено";
                         }
@@ -1714,7 +1763,7 @@ $(function () {
 //                                    infostr += "<span class='adrs'>" + "address" + "</span>";
                                 infostr += "</div><div class='right_menu_content-block'>";
                                 for (var key in response.features[i].properties) {
-                                    if((response.features[i].properties[key] != null) && (response.features[i].properties[key] != 0)) {
+                                    if ((response.features[i].properties[key] != null) && (response.features[i].properties[key] != 0)) {
                                         infostr += "<span class='right_menu_content-title'>" + key + "</span><span class='right_menu_content-description'>" + response.features[i].properties[key] + "</span>";
                                     }
                                 }
@@ -1790,20 +1839,20 @@ $(function () {
         });
 
         //Зумувати до початкового екстенту//
-       $('#main_tt12').on('mousedown', function () {
-           $(this).toggleClass('active');
-           var viewIn = map.getView();
-           var bounce = ol.animation.bounce({
-               resolution: viewIn.getResolution()*2
-           });
-           var pan = ol.animation.pan({ source: viewIn.getCenter() });
-           var zoom = ol.animation.zoom({ resolution: viewIn.getResolution()  });
-           map.beforeRender(pan, zoom, bounce);
-           var viewTo = new ol.View({
+        $('#main_tt12').on('mousedown', function () {
+            $(this).toggleClass('active');
+            var viewIn = map.getView();
+            var bounce = ol.animation.bounce({
+                resolution: viewIn.getResolution() * 2
+            });
+            var pan = ol.animation.pan({source: viewIn.getCenter()});
+            var zoom = ol.animation.zoom({resolution: viewIn.getResolution()});
+            map.beforeRender(pan, zoom, bounce);
+            var viewTo = new ol.View({
                 center: [3170647.44192, 6315057.33961],
                 zoom: 12
 
-           });
+            });
             map.setView(viewTo);
         });
         $('#main_tt12').on('mouseup', function () {
@@ -1816,12 +1865,12 @@ $(function () {
         var searchBox = new google.maps.places.Autocomplete(input);
 
         var dialog = document.querySelector('dialog');
-        dialog.querySelector('.btn-cancel').addEventListener('click', function() {
+        dialog.querySelector('.btn-cancel').addEventListener('click', function () {
             dialog.close();
         });
         $('.main_search_block').click(function () {
-            if(!$('.main_search_block').hasClass('open')){
-                if(searchMarker !== undefined){
+            if (!$('.main_search_block').hasClass('open')) {
+                if (searchMarker !== undefined) {
                     map.removeOverlay(searchMarker);
                 }
             }
@@ -1840,13 +1889,13 @@ $(function () {
                 url: 'https://maps.googleapis.com/maps/api/geocode/json',
                 data: {'address': searchval},
                 success: function (data) {
-                    if(data.status == 'ZERO_RESULTS'){
+                    if (data.status == 'ZERO_RESULTS') {
                         dialog.showModal();
-                        if(searchMarker !== undefined){
+                        if (searchMarker !== undefined) {
                             map.removeOverlay(searchMarker);
                         }
-                    }else{
-                        if(searchMarker !== undefined){
+                    } else {
+                        if (searchMarker !== undefined) {
                             map.removeOverlay(searchMarker);
                         }
                         var sourceProj = map.getView().getProjection();
@@ -1856,14 +1905,14 @@ $(function () {
 
 
                         map.getView().fit(fitextent, map.getSize());
-                        if(searchMarker === undefined){
+                        if (searchMarker === undefined) {
                             searchMarker = new ol.Overlay({
                                 element: document.getElementById('searchLocation'),
                                 positioning: 'center-center',
                             });
                         }
                         map.addOverlay(searchMarker);
-                        var position = ol.proj.transform([data.results[0].geometry.location.lng,data.results[0].geometry.location.lat], 'EPSG:4326', 'EPSG:900913');
+                        var position = ol.proj.transform([data.results[0].geometry.location.lng, data.results[0].geometry.location.lat], 'EPSG:4326', 'EPSG:900913');
                         searchMarker.setPosition(position);
                         $('#searchLocation').show();
                     }

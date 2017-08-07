@@ -25,6 +25,11 @@ class Layer
     /**
      * @var string
      */
+    private $sourcetype;
+    
+    /**
+     * @var string
+     */
     private $params;
 
 
@@ -87,6 +92,30 @@ class Layer
     }
 
     /**
+     * Set sourcetype
+     *
+     * @param string $sourcetype
+     *
+     * @return Layer
+     */
+    public function setSourcetype($sourcetype)
+    {
+        $this->sourcetype = $sourcetype;
+
+        return $this;
+    }
+
+    /**
+     * Get sourcetype
+     *
+     * @return string
+     */
+    public function getSourcetype()
+    {
+        return $this->sourcetype;
+    }
+    
+    /**
      * Set params
      *
      * @param string $params
@@ -140,6 +169,9 @@ class Layer
     }
     
     public function __toString() {
+            if(is_null($this->getName())) {
+        return 'NULL';
+    }
         return $this->getName();
     }
     /**

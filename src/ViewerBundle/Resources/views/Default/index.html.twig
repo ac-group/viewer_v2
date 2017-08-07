@@ -44,6 +44,7 @@
     output='js/sc3.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -53,6 +54,11 @@
   ga('create', 'UA-5422036-8', 'auto');
   ga('send', 'pageview');
 
+</script>
+<script>
+    //https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.2.0/ol.js
+       aLayers.init({{layers|raw}});
+ {#      aLayers.helloWorld();#}
 </script>
 {% endblock %}
 {#    'js/version2/coatuusearch.js'#}

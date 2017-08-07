@@ -13,6 +13,10 @@ class LayerAdmin extends AbstractAdmin
         $formMapper
             ->add('type','choice', array(
                 'choices'  => array(
+                    'ol.layer.Tile' => 'ol.layer.Tile',
+                )))
+            ->add('sourcetype','choice', array(
+                'choices'  => array(
                     'ol.source.TileWMS' => 'ol.source.TileWMS',
                     'ol.source.OSM' => 'ol.source.OSM',
                     'ol.source.XYZ' => 'ol.source.XYZ',
